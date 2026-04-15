@@ -11,6 +11,6 @@ jobs:
               with:
                 dotnet-version: '9.0.x'
             - name: Build solution
-              uses: dotnet build
+              run: dotnet build
             - name: Test solution
-              uses: dotnet test
+              run: dotnet test
