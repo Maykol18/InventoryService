@@ -1,0 +1,16 @@
+name: ci
+on: [push]
+jobs:
+    build:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout git repository
+              uses: actions/checkout@v2
+            - name: Setup dotnet
+              uses: actions/setup-dotnet@v1
+              with:
+                dotnet-version: '9.0.x'
+            - name: Build solution
+              uses: dotnet build
+            - name: Test solution
+              uses: dotnet test
