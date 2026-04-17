@@ -14,6 +14,7 @@ public class ProductController : ControllerBase
     public IActionResult GetAll()
     {
         var products = _service.GetAll();
+        
         return Ok(products);
     }
 
@@ -21,29 +22,60 @@ public class ProductController : ControllerBase
     public IActionResult GetById(int id)
     {
         var product = _service.GetById(id);
+
         if(product == null)
             return NotFound();
+
         return Ok(product); 
     }
+
     [HttpPost]
     public IActionResult AddProduct(Product product)
     {
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new
+            {
+                Message = "Datos invalidos",
+                Errors = ModelState
+            });
+        }
+
         _service.AddProduct(product);
 
         return Created();
     }
 
     [HttpPut]
-    public IActionResult UpdateProduct(int id, Product product)
+    public IActionResult UpdateProduct(int id, Product dto)
     {
-        var product1 = _service.UpdateProduct(id, product);
-        return Ok(product1);
+        if (!ModelState.IsValid)
+        {
+            return BadRequest(new
+            {
+                Message = "Datos invalidos",
+                Errors = ModelState
+            });
+        }
+
+        var lookingForProduct = _service.GetById(id);
+        if(lookingForProduct == null)
+            return NotFound();
+
+        var product = _service.UpdateProduct(id, dto);
+
+        return Ok(product);
     }
 
     [HttpDelete]
     public IActionResult DeleteProduct(int id)
-    {
+    {        
+        var lookingForProduct = _service.GetById(id);
+        if(lookingForProduct == null)
+            return NotFound();
+
         _service.DeleteProduct(id);
+
         return NoContent();
     }
 }

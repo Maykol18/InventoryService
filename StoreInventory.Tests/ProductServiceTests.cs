@@ -31,10 +31,9 @@ public class ProductServiceTests
 
     public void Should_ThrowApplicationException_When_ProductNotFound(int id)
     {
-        Assert.Throws<ApplicationException>(() =>
-        {
-            var product = service.GetById(id);
-        });
+        var product = service.GetById(id);
+
+        Assert.Null(product);        
     }
 
     [Fact]
@@ -67,11 +66,11 @@ public class ProductServiceTests
     [InlineData(3000, "random1", 25.6, 28)]
     [InlineData(9000, "random2", 30.6, 38)]
     public void Should_ThrowApplicationException_When_ProductIsNotFoundById(int id, string name, decimal price, int stock)
-    {
-        Assert.Throws<ApplicationException>(() =>
-        {            
-        var productToUpdate = new Product{Name = name, Price = price, Stock = stock};
-        service.UpdateProduct(id, productToUpdate);
+    {           
+        Assert.Throws<NullReferenceException>(() =>
+        {
+            var productToUpdate = new Product{Name = name, Price = price, Stock = stock};
+            service.UpdateProduct(id, productToUpdate);
         });
     }
 
@@ -93,9 +92,10 @@ public class ProductServiceTests
     [InlineData(9000)]
     public void Should_ThrowApplicationException_When_DeletingProductNotFound(int id)
     {
-        Assert.Throws<ApplicationException>(() =>
-        {
-            service.DeleteProduct(id);
-        });
+        var countBeforeAdd = service.GetAll().Count;
+        service.DeleteProduct(id);
+        var countAfterAdd = service.GetAll().Count;
+
+        Assert.Equal(countBeforeAdd, countAfterAdd);
     }
 }

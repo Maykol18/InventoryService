@@ -20,8 +20,6 @@ public class ProductService : IProductService
     public void DeleteProduct(int id)
     {
         var product = MockProducts.FirstOrDefault(x => x.Id == id)!;
-        if(product == null)
-            throw  new ApplicationException("Product not found");
         MockProducts.Remove(product);
     }
 
@@ -32,23 +30,17 @@ public class ProductService : IProductService
 
     public Product GetById(int id)
     {
-        
-        if(MockProducts.FirstOrDefault(x => x.Id == id)! == null)
-            throw  new ApplicationException("Product not found");
         var product = MockProducts.FirstOrDefault(x => x.Id == id)!;
         return MockProducts.FirstOrDefault(x => x.Id == id)!;
     }
 
-    public Product UpdateProduct(int id, Product product)
+    public Product UpdateProduct(int id, Product dto)
     {
+        var product = MockProducts.FirstOrDefault(x => x.Id == id)!;
+        product.Name = dto.Name;
+        product.Price = dto.Price;
+        product.Stock = dto.Stock;
         
-        if(MockProducts.FirstOrDefault(x => x.Id == id)! == null)
-            throw  new ApplicationException("Product not found");
-        var product1 = MockProducts.FirstOrDefault(x => x.Id == id)!;
-        product1.Name = product.Name;
-        product1.Price = product.Price;
-        product1.Stock = product.Stock;
-        
-        return product1;
+        return product;
     }
 }
